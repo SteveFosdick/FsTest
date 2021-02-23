@@ -1,0 +1,5 @@
+*.inf
+*.o
+osfile
+byteio
+osgbpb

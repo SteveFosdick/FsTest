@@ -1,0 +1,1 @@
+read fstest.osfile/bbcpl fstest.osfile/b fstest.osfilesave fstest.osfile
