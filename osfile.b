@@ -61,10 +61,16 @@ $(
    CBLK!6 := 0
    CBLK!7 := 0
    CALLBYTE(OSFILE, 5, CBLK<<1)
-   UNLESS CBLK!1 = LoadLow & CBLK!2 = LoadHigh DO
-      WRITEF("OSFILE %I2: incorrect load address*N")
-   UNLESS CBLK!3 = ExecLow & CBLK!4 = ExecHigh DO
-      WRITEF("OSFILE %I2: incorrect exec address*N")
+   UNLESS CBLK!1 = LoadLow & CBLK!2 = LoadHigh DO $(
+      WRITEF("OSFILE %I2: incorrect load address*N", FUNC)
+      WRITEF("Written %X4%X4, ", LoadHigh, LoadLow)
+      WRITEF("%X4%X4 returned*N", CBLK!2, CBLK!1)
+   $)
+   UNLESS CBLK!3 = ExecLow & CBLK!4 = ExecHigh DO $(
+      WRITEF("OSFILE %I2: incorrect exec address*N", FUNC)
+      WRITEF("Written %X4%X4, ", ExecHigh, ExecLow)
+      WRITEF("%X4%X4 returned*N", CBLK!4, CBLK!3)
+   $)
 $)
 
 AND TestAttr(CBLK, FN) BE
