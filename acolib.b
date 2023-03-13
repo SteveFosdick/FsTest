@@ -10,7 +10,7 @@ MANIFEST $(
    MAXFNLEN = 14
 $)
 
-LET OPENFILE(filename, mode, modedesc) = VALOF
+LET OPENFILE(filename, mode) = VALOF
 $(
    LET bytelen  = filename%0
    LET reslow  = ?
