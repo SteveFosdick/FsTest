@@ -38,19 +38,30 @@ $(
    fcb%12 := 0
 $)
 
+AND CheckedOSGBPB(fcb, func) BE
+$(
+   CALLBYTE(OSGBPB, func, fcb << 1)
+   IF (MCRESULT >> 8) = #XFF DO $(
+      LET ecode = MCRESULT & #XFF
+      ERRORMSG(ecode+1000)
+      WRITEF("error#%N in OSGBPB#%N*N", ecode, func)
+      STOP(501)
+   $)
+$)
+
 AND SeekPut(fd, fdata, offset, len, fileptr) BE
 $(
    LET fcb  = VEC(6)
    setupFCB(fcb, fd, fdata, offset, len)
    setupPTR(fcb, fileptr)
-   CALLBYTE(OSGBPB, 1, fcb << 1)
+   CheckedOSGBPB(fcb, 1)
 $)
 
 AND PutBytes(fd, fdata, offset, len) BE
 $(
    LET fcb  = VEC(6)
    setupFCB(fcb, fd, fdata, offset, len)
-   CALLBYTE(OSGBPB, 2, fcb << 1)
+   CheckedOSGBPB(fcb, 2)
 $)
 
 AND SeekGet(fd, fdata, offset, len, fileptr) BE
@@ -58,13 +69,30 @@ $(
    LET fcb  = VEC(6)
    setupFCB(fcb, fd, fdata, offset, len)
    setupPTR(fcb, fileptr)
-   CALLBYTE(OSGBPB, 3, fcb << 1)
+   CheckedOSGBPB(fcb, 3)
 $)
 
 AND GetBytes(fd, fdata, offset, len) BE
 $(
    LET fcb  = VEC(6)
    setupFCB(fcb, fd, fdata, offset, len)
+   CheckedOSGBPB(fcb, 4)
+$)
+
+AND UnCheckedGet(fd) BE
+$(
+   LET tvec = VEC(10)
+   LET tbyte = tvec << 1
+   LET fcb  = VEC(6)
+   setupFCB(fcb, 0, tbyte, 0, 10)
    CALLBYTE(OSGBPB, 4, fcb << 1)
 $)
 
+AND UnCheckedPut(fd) BE
+$(
+   LET tvec = VEC(10)
+   LET tbyte = tvec << 1
+   LET fcb  = VEC(6)
+   setupFCB(fcb, 0, tbyte, 0, 10)
+   CALLBYTE(OSGBPB, 2, fcb << 1)
+$)

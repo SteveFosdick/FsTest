@@ -16,5 +16,7 @@ GLOBAL $(
    WriteRandom:285
    CompareRandom:286
    banner:287
+   UnCheckedGet:288
+   UnCheckedPut:289
 $)
 

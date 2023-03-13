@@ -35,8 +35,15 @@ AND PutBytes(fd, fdata, offset, len) BE
 $(
    LET last = offset + len - 1
    MCRESULT := 0
-   FOR i = offset TO last DO
+   FOR i = offset TO last DO $(
       CALLBYTE(OSBPUT, fdata%i, fd<<8)
+      IF (MCRESULT >> 8) = #XFF THEN $(
+         LET ecode = MCRESULT & #XFF
+         ERRORMSG(ecode)
+         WRITEF("fail: Error #%N in OSBPUT", ecode)
+         STOP(504)
+      $)
+   $)
 $)
 
 AND SeekPut(fd, fdata, offset, len, fileptr) BE
@@ -51,7 +58,12 @@ $(
    MCRESULT := 0
    FOR i = offset TO last DO $(
       CALLBYTE(OSBGET, 0, fd<<8)
-      IF (MCRESULT >> 8) = #XFF BREAK
+      IF (MCRESULT >> 8) = #XFF THEN $(
+         LET ecode = MCRESULT & #XFF
+         ERRORMSG(ecode+1000)
+         WRITEF("fail: Error #%N in OSBGET", ecode)
+         STOP(504)
+      $)
       fdata%i := MCRESULT & #XFF
    $)
 $)
@@ -62,3 +74,12 @@ $(
    GetBytes(fd, fdata, offset, len)
 $)
 
+AND UnCheckedGet(fd) BE
+$(
+   CALLBYTE(OSBGET, 0, fd<<8)
+$)
+
+AND UnCheckedPut(fd) BE
+$(
+   CALLBYTE(OSBPUT, 0, fd<<8)
+$)

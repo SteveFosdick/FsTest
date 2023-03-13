@@ -40,7 +40,7 @@ $(
 
    // Start with a handle that is out of range.
    MCRESULT := 0
-   GetBytes(0, tbyte, 10)
+   UnCheckedGet(0)
    UNLESS (MCRESULT >> 8) = #XFF DO
       WRITES("fail: no error generated using another filing system's handle*N")
 
@@ -50,7 +50,7 @@ $(
       WRITEF("fail: unable to open file %S for reading*N", filename)
    ELSE $(
       MCRESULT := 0
-      PutBytes(handle, tbyte, 10)
+      UnCheckedPut(handle)
       UNLESS (MCRESULT >> 8) = #XFF DO
          WRITES("fail: no error generated writing to a file open for reading*N")
       CLOSE(handle)
@@ -58,7 +58,7 @@ $(
 
    // Now try a handle that is in-range but closed.
    MCRESULT := 0
-   GetBytes(handle+1, tbyte, 10)
+   UnCheckedGet(handle+1)
    UNLESS (MCRESULT >> 8) = #XFF DO
       WRITES("fail: no error generated using a closed handle*N")
 $)
